@@ -1,0 +1,8 @@
+Carlos,Perez,22-01-1980,50100.90
+Matias,Sanchez,03-05-1967,46700
+Fatima,Zarate,23-07-1989,65000.50
+Juan,Lopez,12-11-1973,68200.50
+Pablo,Blanco,08-10-1992,62300
+Carolina,Martinez,30-09-1982,59300
+Marcos,Melgarejo,09-10-1967,68200.50
+Juana,Alarcon,29-04-1978,55000.40

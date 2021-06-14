@@ -1,5 +1,0 @@
-Nombre y Apellido: Sandra Gonzalez- Fecha de Nacimiento: -1981- Sueldo: 56000.08
-Nombre y Apellido: Juan Perez- Fecha de Nacimiento: -1973- Sueldo: 61500.0
-Nombre y Apellido: Carlos García- Fecha de Nacimiento: -1950- Sueldo: 47800.9
-Nombre y Apellido: Magdalena Martinez- Fecha de Nacimiento: -1980- Sueldo: 53000.5
-Nombre y Apellido: Pablo Sanchez- Fecha de Nacimiento: -1976- Sueldo: 64300.0
