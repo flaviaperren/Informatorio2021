@@ -2,10 +2,13 @@ package com.informatorio.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -13,20 +16,24 @@ import javax.persistence.Enumerated;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idProducto;
+    @NotBlank(message = "El nombre no debe ser blanco o nulo")
     private String nombre;
     private String descripcion;
+    @Positive
     private BigDecimal precioUnitario;
+    @NotBlank(message = "Es necesario establecer codigo de inventario")
+    @Column(unique = true)
     private String codigoInventario;
     @Enumerated (EnumType.STRING)
     private Categoria categoria;
 
     public Long getId() {
-        return id;
+        return idProducto;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long idProducto) {
+        this.idProducto = idProducto;
     }
 
     public String getNombre() {

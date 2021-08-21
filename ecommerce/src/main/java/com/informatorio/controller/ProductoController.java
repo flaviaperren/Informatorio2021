@@ -8,38 +8,41 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 
 @RestController
 public class ProductoController {
     @Autowired
     private ProductoRepository productoRepository;
 
-    @RequestMapping(value = "/producto", method = RequestMethod.GET)
+    @GetMapping(value = "/producto")
     public ResponseEntity<?> getAll() {
-        return new ResponseEntity(productoRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(productoRepository.findAll(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/producto/{id}", method = RequestMethod.GET)
-    public Producto getProductoPorId(@PathVariable("id") Long id) {
-        return productoRepository.findById(id).get();
+    @GetMapping(value = "/producto/{id}")
+    public ResponseEntity<?> getProductoPorId(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(productoRepository.findById(id).get(), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/producto", method = RequestMethod.POST)
-    public Producto createProducto(@RequestBody Producto producto) {
-        return productoRepository.save(producto);
+    @PostMapping(value = "/producto")
+    public ResponseEntity<?> crearProducto(@RequestBody Producto producto) {
+        return new ResponseEntity<>(productoRepository.save(producto), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/producto/{id}", method = RequestMethod.PUT)
-    public Producto modificarProducto(@PathVariable("id") Long id, @RequestBody Producto producto) {
+    @PutMapping(value = "/producto/{id}")
+    public ResponseEntity<?> modificarProducto(@PathVariable("id") Long id, @RequestBody Producto producto) {
         Producto productoExistente = productoRepository.findById(id).get();
         productoExistente.setPrecioUnitario(producto.getPrecioUnitario());
-        return productoRepository.save(productoExistente);
+        return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/producto/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/producto/{id}")
     public void borrarPorId(@PathVariable("id") Long id) {
         productoRepository.deleteById(id);
     }

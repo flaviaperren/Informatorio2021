@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
@@ -13,21 +17,27 @@ import java.time.LocalDate;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idUsuario;
+    @NotBlank(message = "El nombre no debe ser blanco o nulo")
     private String nombre;
+    @NotBlank(message = "El apellido no debe ser blanco o nulo")
     private String apellido;
+    @NotBlank(message = "Es necesario establecer direccion")
     private String direccion;
-    private LocalDate fechaAlta = LocalDate.now();
+    @CreationTimestamp
+    private LocalDate fechaAlta;
+    @UpdateTimestamp
+    private LocalDate fechaModificacion;
 
     public Usuario() {
     }
 
     public Long getId() {
-        return id;
+        return idUsuario;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
     
     public String getNombre() {
@@ -62,10 +72,11 @@ public class Usuario {
         this.fechaAlta = fechaAlta;
     }
 
-    @Override
-    public String toString() {
-        return "Usuario{" + "id=" + id + ", nombre= " + nombre +
-        ", apellido= " + apellido + ", direccion= " + direccion + 
-        ", fecha de alta= " + fechaAlta + "}";
+    public LocalDate getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(LocalDate fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
     }
 }
