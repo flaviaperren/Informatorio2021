@@ -25,9 +25,9 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/usuario/{id}")
-    public ResponseEntity<?> getUsuarioPorId(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(usuarioRepository.findById(id).get(), HttpStatus.OK);
+    @GetMapping(value = "/usuario/{idUsuario}")
+    public ResponseEntity<?> getUsuarioPorId(@PathVariable("idUsuario") Long idUsuario) {
+        return new ResponseEntity<>(usuarioRepository.findById(idUsuario).get(), HttpStatus.OK);
     }
     
     @PostMapping(value = "/usuario")
@@ -35,16 +35,16 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioRepository.save(usuario), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/usuario/{id}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable("id") Long id, @RequestBody Usuario usuario) {
-        Usuario usuarioExistente = usuarioRepository.findById(id).get();
+    @PutMapping(value = "/usuario/{idusuario}")
+    public ResponseEntity<?> modificarUsuario(@PathVariable("idUsuario") Long idUsuario, @RequestBody Usuario usuario) {
+        Usuario usuarioExistente = usuarioRepository.findById(idUsuario).get();
         usuarioExistente.setDireccion(usuario.getDireccion());
         return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/usuario/{id}")
-    public void borrarPorId(@PathVariable("id") Long id) {
-        usuarioRepository.deleteById(id);
+    @DeleteMapping(value = "/usuario/{idUsuario}")
+    public void borrarPorId(@PathVariable("idUsuario") Long idUsuario) {
+        usuarioRepository.deleteById(idUsuario);
     }
 
 

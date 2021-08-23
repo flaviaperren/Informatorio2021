@@ -25,9 +25,9 @@ public class ProductoController {
         return new ResponseEntity<>(productoRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/producto/{id}")
-    public ResponseEntity<?> getProductoPorId(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(productoRepository.findById(id).get(), HttpStatus.OK);
+    @GetMapping(value = "/producto/{idProducto}")
+    public ResponseEntity<?> getProductoPorId(@PathVariable("idProducto") Long idProducto) {
+        return new ResponseEntity<>(productoRepository.findById(idProducto).get(), HttpStatus.OK);
     }
     
     @PostMapping(value = "/producto")
@@ -35,16 +35,16 @@ public class ProductoController {
         return new ResponseEntity<>(productoRepository.save(producto), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/producto/{id}")
-    public ResponseEntity<?> modificarProducto(@PathVariable("id") Long id, @RequestBody Producto producto) {
-        Producto productoExistente = productoRepository.findById(id).get();
+    @PutMapping(value = "/producto/{idProducto}")
+    public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, @RequestBody Producto producto) {
+        Producto productoExistente = productoRepository.findById(idProducto).get();
         productoExistente.setPrecioUnitario(producto.getPrecioUnitario());
         return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/producto/{id}")
-    public void borrarPorId(@PathVariable("id") Long id) {
-        productoRepository.deleteById(id);
+    @DeleteMapping(value = "/producto/{idProducto}")
+    public void borrarPorId(@PathVariable("idProducto") Long idProducto) {
+        productoRepository.deleteById(idProducto);
     }
 
 }

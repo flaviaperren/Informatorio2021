@@ -1,16 +1,19 @@
 package com.informatorio.entity;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,8 +32,8 @@ public class Usuario {
     @UpdateTimestamp
     private LocalDate fechaModificacion;
 
-    public Usuario() {
-    }
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Carrito> carritos = new ArrayList<>();
 
     public Long getId() {
         return idUsuario;
@@ -78,5 +81,15 @@ public class Usuario {
 
     public void setFechaModificacion(LocalDate fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
+    }
+
+    public void agregarCarrito(Carrito carrito) {
+        carritos.add(carrito);
+        carrito.setUsuario(this);
+    }
+
+    public void eliminarCarrito(Carrito carrito) {
+        carritos.remove(carrito);
+        carrito.setUsuario(null);
     }
 }
