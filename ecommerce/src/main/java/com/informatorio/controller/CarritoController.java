@@ -23,7 +23,7 @@ public class CarritoController {
     private CarritoRepository carritoRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
-
+ 
     @GetMapping(value = "/carrito")
     public ResponseEntity<?> getAll() {
         return new ResponseEntity<>(carritoRepository.findAll(), HttpStatus.OK);
@@ -42,8 +42,8 @@ public class CarritoController {
         return new ResponseEntity<>(carritoRepository.save(carrito), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/usuario/{idUsuario}/carrito/{idCarrito}")
-    public void borrarPorId(@PathVariable("idUsuario") Long idUsuario,
+    @DeleteMapping(value = "/carrito/{idCarrito}")
+    public void borrarPorId(
     @PathVariable("idCarrito") Long idCarrito) {
         carritoRepository.deleteById(idCarrito);
     }
