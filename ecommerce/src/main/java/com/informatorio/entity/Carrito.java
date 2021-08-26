@@ -1,16 +1,21 @@
 package com.informatorio.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,6 +37,9 @@ public class Carrito {
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleCarrito> listaCarrito = new ArrayList<>();
 
     public Long getId() {
         return idCarrito;
@@ -77,6 +85,19 @@ public class Carrito {
         return usuario.getNombre();
     }
 
+    public List<DetalleCarrito> getDetalleCarrito() {
+        return listaCarrito;
+    }
+
+    public void agregarDetalleCarrito(DetalleCarrito detalleCarrito) {
+        listaCarrito.add(detalleCarrito);
+        detalleCarrito.setCarrito(this);
+    }
+
+    public void eliminarDetalleCarrito(DetalleCarrito detalleCarrito) {
+        listaCarrito.remove(detalleCarrito);
+        detalleCarrito.setCarrito(null);
+    }
 
     
 }

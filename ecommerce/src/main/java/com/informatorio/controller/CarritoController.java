@@ -3,8 +3,11 @@ package com.informatorio.controller;
 import javax.validation.Valid;
 
 import com.informatorio.entity.Carrito;
+import com.informatorio.entity.DetalleCarrito;
+import com.informatorio.entity.Producto;
 import com.informatorio.entity.Usuario;
 import com.informatorio.repository.CarritoRepository;
+import com.informatorio.repository.ProductoRepository;
 import com.informatorio.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +27,8 @@ public class CarritoController {
     private CarritoRepository carritoRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired 
+    private ProductoRepository productoRepository;
  
     @GetMapping(value = "/carrito")
     public ResponseEntity<?> getAll() {
@@ -40,6 +46,20 @@ public class CarritoController {
         Usuario usuario = usuarioRepository.findById(idUsuario).get();
         carrito.setUsuario(usuario);
         return new ResponseEntity<>(carritoRepository.save(carrito), HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/producto/{idProducto}/carrito/{idCarrito}")
+    public ResponseEntity<?> agregarProducto(@PathVariable("idProducto") Long idProducto,
+    @PathVariable("idCarrito") Long idCarrito,
+    @Valid @RequestBody DetalleCarrito detalleCarrito) {
+        Carrito carritoExistente = carritoRepository.getById(idCarrito);
+        Producto productoAgregar = productoRepository.getById(idProducto);
+        DetalleCarrito detalle = new DetalleCarrito();
+        detalle.setCarrito(carritoExistente);
+        detalle.setProducto(productoAgregar);
+        detalle.setCantidad(detalleCarrito.getCantidad());
+        carritoExistente.agregarDetalleCarrito(detalle);
+        return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/carrito/{idCarrito}")
