@@ -7,6 +7,7 @@ import com.informatorio.entity.DetalleCarrito;
 import com.informatorio.entity.Producto;
 import com.informatorio.entity.Usuario;
 import com.informatorio.repository.CarritoRepository;
+import com.informatorio.repository.DetalleCarritoRepository;
 import com.informatorio.repository.ProductoRepository;
 import com.informatorio.repository.UsuarioRepository;
 
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class CarritoController {
     @Autowired
@@ -29,6 +32,8 @@ public class CarritoController {
     private UsuarioRepository usuarioRepository;
     @Autowired 
     private ProductoRepository productoRepository;
+    @Autowired
+    private DetalleCarritoRepository detalleCarritoRepository;
  
     @GetMapping(value = "/carrito")
     public ResponseEntity<?> getAll() {
@@ -48,7 +53,7 @@ public class CarritoController {
         return new ResponseEntity<>(carritoRepository.save(carrito), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/producto/{idProducto}/carrito/{idCarrito}")
+    @PutMapping(value = "/productoMas/{idProducto}/carrito/{idCarrito}")
     public ResponseEntity<?> agregarProducto(@PathVariable("idProducto") Long idProducto,
     @PathVariable("idCarrito") Long idCarrito,
     @Valid @RequestBody DetalleCarrito detalleCarrito) {
@@ -60,6 +65,20 @@ public class CarritoController {
         detalle.setCantidad(detalleCarrito.getCantidad());
         carritoExistente.agregarDetalleCarrito(detalle);
         return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/productoMenos/{idProducto}/carrito/{idCarrito}")
+    public void eliminarProducto(@PathVariable("idProducto") Long idProducto,
+    @PathVariable("idCarrito") Long idCarrito) {
+        Carrito carritoExistente = carritoRepository.getById(idCarrito);
+        Producto productoEliminar = productoRepository.getById(idProducto);
+        List<DetalleCarrito> lista = carritoExistente.getDetalleCarrito();
+        for(DetalleCarrito l:lista) {
+            if(l.getProducto().getId().equals(productoEliminar.getId())) {
+                carritoExistente.eliminarDetalleCarrito(l);
+                detalleCarritoRepository.delete(l);
+            }
+        }    
     }
 
     @DeleteMapping(value = "/carrito/{idCarrito}")
