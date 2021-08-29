@@ -38,7 +38,7 @@ public class UsuarioController {
     @PutMapping(value = "/usuario/{idusuario}")
     public ResponseEntity<?> modificarUsuario(@PathVariable("idUsuario") Long idUsuario, @RequestBody Usuario usuario) {
         Usuario usuarioExistente = usuarioRepository.findById(idUsuario).get();
-        usuarioExistente.setDireccion(usuario.getDireccion());
+        usuarioExistente.setEmail(usuario.getEmail());
         return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
     }
 
