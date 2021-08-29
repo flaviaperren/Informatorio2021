@@ -53,6 +53,7 @@ public class ProductoController {
     public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, @RequestBody Producto producto) {
         Producto productoExistente = productoRepository.findById(idProducto).get();
         productoExistente.setPrecioUnitario(producto.getPrecioUnitario());
+        productoExistente.setPublicado(producto.getPublicado());
         return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }
 
