@@ -31,6 +31,8 @@ public class Usuario {
     private String nombre;
     @NotBlank(message = "El apellido no debe ser blanco o nulo")
     private String apellido;
+    @NotBlank(message = "Es necesario establecer una direccion")
+    private String direccion;
     @Column(unique = true)
     @Email(regexp = ValidationHelper.EMAIL_REGEX)
     private String email;
@@ -71,6 +73,14 @@ public class Usuario {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getEmail() {

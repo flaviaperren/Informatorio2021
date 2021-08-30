@@ -15,7 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -30,10 +32,14 @@ public class Orden {
     private Tipo tipo;
     @NotBlank(message = "Es necesario establecer codigo de comprobante")
     @Column(unique = true)
-    private Integer codigoComprobante;
+    private Long codigoComprobante;
     @Enumerated (EnumType.STRING)
     private Estado estado;
     private Long carritoId;
+    @Size(max = 200)
+    private String observacion;
+    @Transient 
+    private Double total;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
@@ -66,11 +72,11 @@ public class Orden {
         this.tipo = tipo;
     }
 
-    public Integer getCodigoComprobante() {
+    public Long getCodigoComprobante() {
         return codigoComprobante;
     }
 
-    public void setCodigoComprobante(Integer codigoComprobante) {
+    public void setCodigoComprobante(Long codigoComprobante) {
         this.codigoComprobante = codigoComprobante;
     }
 
@@ -90,12 +96,28 @@ public class Orden {
         this.carritoId = carritoId;
     }
 
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Double getTotal() {
+        Double totalCompra = 0.0;
+        for(Linea l : this.getLinea()) {
+            totalCompra = l.getSubtotal() + totalCompra;
+        }
+        return totalCompra;
     }
 
     public List<Linea> getLinea() {

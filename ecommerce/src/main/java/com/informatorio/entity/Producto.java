@@ -2,6 +2,7 @@ package com.informatorio.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +28,9 @@ public class Producto {
     private Boolean publicado;
     @Positive
     private Double precioUnitario;
+    @NotBlank(message = "Es necesario establecer codigo de inventario")
+    @Column(unique = true)
+    private String codigoInventario;
     @Enumerated (EnumType.STRING)
     private Categoria categoria;
 
@@ -84,6 +88,14 @@ public class Producto {
 
     public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
+    }
+
+    public String getCodigoInventario() {
+        return codigoInventario;
+    }
+
+    public void setCodigoInventario(String codigoInventario) {
+        this.codigoInventario = codigoInventario;
     }
 
     public Categoria getCategoria() {
