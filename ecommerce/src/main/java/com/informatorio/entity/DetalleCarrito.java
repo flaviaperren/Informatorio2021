@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,6 +19,8 @@ public class DetalleCarrito {
     private Long idDetalleCarrito;
     @Positive
     private Integer cantidad;
+    @Transient 
+    private Double subtotal;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer" , "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +44,10 @@ public class DetalleCarrito {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public Double getSubtotal() {
+        return (cantidad * producto.getPrecioUnitario());
     }
 
     public Carrito getCarrito() {

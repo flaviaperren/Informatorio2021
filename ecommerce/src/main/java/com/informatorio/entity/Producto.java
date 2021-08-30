@@ -1,6 +1,5 @@
 package com.informatorio.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -27,7 +26,7 @@ public class Producto {
     private LocalDate fechaCreacion;
     private Boolean publicado;
     @Positive
-    private BigDecimal precioUnitario;
+    private Double precioUnitario;
     @Enumerated (EnumType.STRING)
     private Categoria categoria;
 
@@ -79,11 +78,11 @@ public class Producto {
         this.publicado = publicado;
     }
 
-    public BigDecimal getPrecioUnitario() {
+    public Double getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(BigDecimal precioUnitario) {
+    public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +27,8 @@ public class Carrito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCarrito;
+    @Enumerated (EnumType.STRING)
+    private GeneradoPor generadoPor;
     @CreationTimestamp
     private LocalDate fechaCreacion;
     @UpdateTimestamp
@@ -32,7 +36,9 @@ public class Carrito {
     private Boolean estado;
     @Transient
     private String nombreDeUsuario;
-    
+    @Transient
+    private Double total;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
@@ -47,6 +53,14 @@ public class Carrito {
 
     public void setId(Long idCarrito) {
         this.idCarrito = idCarrito;
+    }
+
+    public GeneradoPor getGeneradoPor() {
+        return generadoPor;
+    }
+
+    public void setGeneradoPor(GeneradoPor generadoPor) {
+        this.generadoPor = generadoPor;
     }
 
     public LocalDate getFechaCreacion() {
@@ -82,7 +96,15 @@ public class Carrito {
     }
 
     public String getNombreDeUsuario() {
-        return usuario.getNombre();
+        return usuario.getEmail();
+    }
+
+    public Double getTotal() {
+        Double totalCarrito = 0.0;
+        for(DetalleCarrito d : this.getDetalleCarrito()) {
+            totalCarrito = d.getSubtotal() + totalCarrito;
+        }
+        return totalCarrito;
     }
 
     public List<DetalleCarrito> getDetalleCarrito() {
@@ -99,5 +121,4 @@ public class Carrito {
         detalleCarrito.setCarrito(null);
     }
 
-    
 }
