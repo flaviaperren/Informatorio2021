@@ -1,8 +1,12 @@
 package com.informatorio.controller;
 
 import com.informatorio.entity.Producto;
+
+import java.util.Optional;
+
 import com.informatorio.entity.Categoria;
 import com.informatorio.repository.ProductoRepository;
+import com.informatorio.service.ProductoService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +27,19 @@ public class ProductoController {
     private ProductoRepository productoRepository;
 
     @GetMapping(value = "/producto")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> buscarProductoTodos() {
         return new ResponseEntity<>(productoRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/producto/{idProducto}")
-    public ResponseEntity<?> getProductoPorId(@PathVariable("idProducto") Long idProducto) {
+    public ResponseEntity<?> buscarProductoPorId(@PathVariable("idProducto") Long idProducto) {
         return new ResponseEntity<>(productoRepository.findById(idProducto).get(), HttpStatus.OK);
     }
     
     @GetMapping(value = "/producto/nombre")
     public ResponseEntity<?> buscarProductoPorNombre(@RequestParam(name = "nombre",
      required = false) String nombre) {
-         return new ResponseEntity<>(productoRepository.findByNombreStartingWith(nombre), HttpStatus.OK);
+         return new ResponseEntity<>(productoRepository.findByNombreContaining(nombre), HttpStatus.OK);
      }
 
      @GetMapping(value = "/producto/categoria")
@@ -44,21 +48,32 @@ public class ProductoController {
          return new ResponseEntity<>(productoRepository.findByCategoria(categoria), HttpStatus.OK);
      }
 
+     @GetMapping(value = "/producto/noPublicado")
+    public ResponseEntity<?> buscarProductoNoPublicado(@RequestParam(name = "publicado",
+     required = false) Boolean publicado) {
+         return new ResponseEntity<>(productoRepository.findByPublicadoFalse(), HttpStatus.OK);
+     }
+
     @PostMapping(value = "/producto")
     public ResponseEntity<?> crearProducto(@RequestBody Producto producto) {
-        return new ResponseEntity<>(productoRepository.save(producto), HttpStatus.CREATED);
+        Optional<Producto> codigoExistente = productoRepository.findByCodigo(producto.getCodigo());
+        if(codigoExistente.isPresent()) {
+            return new ResponseEntity<>("Ya existe un producto con el codigo ingresado", HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(productoRepository.save(producto), HttpStatus.CREATED);
+        }
     }
 
     @PutMapping(value = "/producto/{idProducto}")
-    public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, @RequestBody Producto producto) {
+    public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, 
+    @RequestBody Producto productoActualizar) {
         Producto productoExistente = productoRepository.findById(idProducto).get();
-        productoExistente.setPrecioUnitario(producto.getPrecioUnitario());
-        productoExistente.setPublicado(producto.getPublicado());
+        ProductoService.modificarProducto(productoExistente, productoActualizar);
         return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/producto/{idProducto}")
-    public void borrarPorId(@PathVariable("idProducto") Long idProducto) {
+    public void borrarProductoPorId(@PathVariable("idProducto") Long idProducto) {
         productoRepository.deleteById(idProducto);
     }
 

@@ -28,9 +28,9 @@ public class Producto {
     private Boolean publicado;
     @Positive
     private Double precioUnitario;
-    @NotBlank(message = "Es necesario establecer codigo de inventario")
+    @NotBlank(message = "Es necesario establecer codigo")
     @Column(unique = true)
-    private String codigoInventario;
+    private String codigo;
     @Enumerated (EnumType.STRING)
     private Categoria categoria;
 
@@ -90,12 +90,12 @@ public class Producto {
         this.precioUnitario = precioUnitario;
     }
 
-    public String getCodigoInventario() {
-        return codigoInventario;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setCodigoInventario(String codigoInventario) {
-        this.codigoInventario = codigoInventario;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public Categoria getCategoria() {
