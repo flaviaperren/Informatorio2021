@@ -1,7 +1,10 @@
 package com.informatorio.controller;
 
 import java.time.LocalDate;
+
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import com.informatorio.entity.Usuario;
 import com.informatorio.repository.UsuarioRepository;
@@ -33,25 +36,21 @@ public class UsuarioController {
 
     @GetMapping(value = "/usuario/{idUsuario}")
     public ResponseEntity<?> buscarUsuarioPorId(@PathVariable("idUsuario") Long idUsuario) {
-        return new ResponseEntity<>(usuarioRepository.findById(idUsuario).get(), HttpStatus.OK);
+        Usuario usuario = usuarioRepository.findById(idUsuario).
+        orElseThrow(()->new EntityNotFoundException("No existe el usuario buscado"));
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
     @GetMapping(value = "/usuario/ciudad")
     public ResponseEntity<?> buscarUsuarioPorCiudad(@RequestParam(name = "ciudad",
      required = false) String ciudad) {
-         if(ciudad !=null) {
-            return new ResponseEntity<>(usuarioRepository.findByCiudad(ciudad), HttpStatus.OK);
-         }
-         return new ResponseEntity<>(usuarioRepository.findAll(), HttpStatus.OK);
-     }
-
-
+        return new ResponseEntity<>(usuarioRepository.findByCiudad(ciudad), HttpStatus.OK);
+    }
+      
      @GetMapping(value = "/usuario/fecha")
-     public ResponseEntity<?> buscarUsuarioPorFecha(@RequestParam(name = "fechaAlta", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaAlta) {
-         if(fechaAlta != null) {
-             return new ResponseEntity<>(usuarioRepository.findByFechaAltaAfter(fechaAlta), HttpStatus.OK); 
-         }
-         return new ResponseEntity<>(usuarioRepository.findAll(), HttpStatus.OK);
+     public ResponseEntity<?> buscarUsuarioPorFecha(@RequestParam(name = "fechaAlta", required = false) 
+     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaAlta) {
+        return new ResponseEntity<>(usuarioRepository.findByFechaAltaAfter(fechaAlta), HttpStatus.OK); 
      }
     
     @PostMapping(value = "/usuario")
@@ -61,8 +60,7 @@ public class UsuarioController {
             return new ResponseEntity<>("Ya existe un usuario con el email ingresado", HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(usuarioRepository.save(usuario), HttpStatus.CREATED);
-        }
-        
+        } 
     }
 
     @PutMapping(value = "/usuario/{idUsuario}")

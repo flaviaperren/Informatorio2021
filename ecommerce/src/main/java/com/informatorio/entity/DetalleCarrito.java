@@ -1,6 +1,5 @@
 package com.informatorio.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ public class DetalleCarrito {
     private Double subtotal;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer" , "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Producto producto;
     
     @JsonIgnore

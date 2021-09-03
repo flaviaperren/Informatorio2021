@@ -19,6 +19,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
@@ -32,7 +35,7 @@ public class Orden {
     private Tipo tipo;
     @NotBlank(message = "Es necesario establecer codigo de comprobante")
     @Column(unique = true)
-    private Long codigoComprobante;
+    private String codigoComprobante;
     @Enumerated (EnumType.STRING)
     private Estado estado;
     private Long carritoId;
@@ -41,9 +44,11 @@ public class Orden {
     @Transient 
     private Double total;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
-
+    
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Linea> lista = new ArrayList<>();
 
@@ -72,11 +77,11 @@ public class Orden {
         this.tipo = tipo;
     }
 
-    public Long getCodigoComprobante() {
+    public String getCodigoComprobante() {
         return codigoComprobante;
     }
 
-    public void setCodigoComprobante(Long codigoComprobante) {
+    public void setCodigoComprobante(String codigoComprobante) {
         this.codigoComprobante = codigoComprobante;
     }
 

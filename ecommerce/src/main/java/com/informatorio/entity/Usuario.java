@@ -148,4 +148,7 @@ public class Usuario {
         carritos.remove(carrito);
         carrito.setUsuario(null);
     }
+    public List<Carrito> getCarritos() {
+        return carritos;
+    }
 }

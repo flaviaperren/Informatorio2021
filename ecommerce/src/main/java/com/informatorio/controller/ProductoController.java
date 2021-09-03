@@ -4,6 +4,8 @@ import com.informatorio.entity.Producto;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import com.informatorio.entity.Categoria;
 import com.informatorio.repository.ProductoRepository;
 import com.informatorio.service.ProductoService;
@@ -33,7 +35,9 @@ public class ProductoController {
 
     @GetMapping(value = "/producto/{idProducto}")
     public ResponseEntity<?> buscarProductoPorId(@PathVariable("idProducto") Long idProducto) {
-        return new ResponseEntity<>(productoRepository.findById(idProducto).get(), HttpStatus.OK);
+        Producto producto = productoRepository.findById(idProducto).
+        orElseThrow(()-> new EntityNotFoundException("No existe el producto buscado"));
+        return ResponseEntity.status(HttpStatus.OK).body(producto);
     }
     
     @GetMapping(value = "/producto/nombre")
