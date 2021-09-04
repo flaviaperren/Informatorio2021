@@ -4,8 +4,6 @@ import com.informatorio.entity.Producto;
 
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import com.informatorio.entity.Categoria;
 import com.informatorio.repository.ProductoRepository;
 import com.informatorio.service.ProductoService;
@@ -35,9 +33,12 @@ public class ProductoController {
 
     @GetMapping(value = "/producto/{idProducto}")
     public ResponseEntity<?> buscarProductoPorId(@PathVariable("idProducto") Long idProducto) {
-        Producto producto = productoRepository.findById(idProducto).
-        orElseThrow(()-> new EntityNotFoundException("No existe el producto buscado"));
-        return ResponseEntity.status(HttpStatus.OK).body(producto);
+        Producto producto = productoRepository.findById(idProducto).orElse(null);
+        if(producto!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(producto);
+        } else {
+            return new ResponseEntity<>("No existe el producto buscado", HttpStatus.CONFLICT);
+        }  
     }
     
     @GetMapping(value = "/producto/nombre")
@@ -72,7 +73,11 @@ public class ProductoController {
     public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, 
     @RequestBody Producto productoActualizar) {
         Producto productoExistente = productoRepository.findById(idProducto).get();
-        ProductoService.modificarProducto(productoExistente, productoActualizar);
+        if(productoExistente!=null) {
+            ProductoService.modificarProducto(productoExistente, productoActualizar);
+        } else {
+            return new ResponseEntity<>("No existe el producto solicitado", HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }
 

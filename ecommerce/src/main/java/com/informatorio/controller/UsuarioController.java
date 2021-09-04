@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import com.informatorio.entity.Usuario;
 import com.informatorio.repository.UsuarioRepository;
 import com.informatorio.service.UsuarioService;
@@ -36,9 +34,12 @@ public class UsuarioController {
 
     @GetMapping(value = "/usuario/{idUsuario}")
     public ResponseEntity<?> buscarUsuarioPorId(@PathVariable("idUsuario") Long idUsuario) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).
-        orElseThrow(()->new EntityNotFoundException("No existe el usuario buscado"));
-        return ResponseEntity.status(HttpStatus.OK).body(usuario);
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null); 
+            if(usuario!=null) {
+                return ResponseEntity.status(HttpStatus.OK).body(usuario);
+            } else {
+                return new ResponseEntity<>("No existe el usuario buscado", HttpStatus.CONFLICT);
+            }
     }
 
     @GetMapping(value = "/usuario/ciudad")
@@ -67,7 +68,11 @@ public class UsuarioController {
     public ResponseEntity<?> modificarUsuario(@PathVariable("idUsuario") Long idUsuario, 
     @RequestBody Usuario usuarioActualizar) {
         Usuario usuarioExistente = usuarioRepository.findById(idUsuario).get();
-        UsuarioService.modificarUsuario(usuarioExistente, usuarioActualizar);
+        if(usuarioExistente!=null) {
+            UsuarioService.modificarUsuario(usuarioExistente, usuarioActualizar);
+        } else {
+            return new ResponseEntity<>("No existe el usuario solicitado", HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
     }
 

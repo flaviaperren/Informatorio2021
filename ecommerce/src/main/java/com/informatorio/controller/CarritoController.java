@@ -1,6 +1,5 @@
 package com.informatorio.controller;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import com.informatorio.entity.Carrito;
@@ -52,9 +51,12 @@ public class CarritoController {
 
     @GetMapping(value = "/carrito/{idCarrito}") 
     public ResponseEntity<?> buscarCarritoPorId(@PathVariable("idCarrito") Long idCarrito) {
-        Carrito carrito = carritoRepository.findById(idCarrito).
-        orElseThrow(()->new EntityNotFoundException("No existe el carrito buscado"));
-        return ResponseEntity.status(HttpStatus.OK).body(carrito);
+        Carrito carrito = carritoRepository.findById(idCarrito).orElse(null);
+        if(carrito!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(carrito);
+        } else {
+            return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping(value = "/carrito/{idCarrito}/detalle")
@@ -95,7 +97,6 @@ public class CarritoController {
         } else {
             return new ResponseEntity<>("No se pueden agregar productos a un carrito cerrado", HttpStatus.CONFLICT);
         }
-        
         return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);
     }
 
@@ -115,11 +116,12 @@ public class CarritoController {
 
     @PostMapping(value = "/carrito/{idCarrito}/checkout")
     public ResponseEntity<?> cerrarCarrito(@PathVariable("idCarrito") Long idCarrito) {
-        Carrito carritoExistente = carritoRepository.getById(idCarrito);
+        Carrito carritoExistente = carritoRepository.findById(idCarrito).orElse(null);
+        if(carritoExistente!=null) {
         if(carritoExistente.getEstado()) {
             if (carritoExistente.getDetalleCarrito().size() >=1) {
                 carritoExistente.setEstado(false);
-            }
+            
             Orden nuevaOrden = new Orden();
             nuevaOrden.setCarritoId(carritoExistente.getId());
             nuevaOrden.setEstado(Estado.CONFIRMADA);
@@ -137,15 +139,21 @@ public class CarritoController {
                 nuevaLinea.setOrden(nuevaOrden);
                 lineaRepository.save(nuevaLinea);
             }
+            } else {
+                return new ResponseEntity<>("El carrito está vacío", HttpStatus.CONFLICT);
+            }
         } else {
             return new ResponseEntity<>("El carrito ya se encuentra cerrado", HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);   
+    } else {
+        return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.CONFLICT);
     } 
 
+}
+
     @DeleteMapping(value = "/carrito/{idCarrito}")
-    public void borrarCarritoPorId(
-    @PathVariable("idCarrito") Long idCarrito) {
+    public void borrarCarritoPorId(@PathVariable("idCarrito") Long idCarrito) {
         carritoRepository.deleteById(idCarrito);
     }
 }
