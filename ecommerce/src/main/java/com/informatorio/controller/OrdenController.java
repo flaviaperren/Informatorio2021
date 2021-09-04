@@ -32,7 +32,7 @@ public class OrdenController {
         if(orden!=null) {
             return ResponseEntity.status(HttpStatus.OK).body(orden);
         } else {
-            return new ResponseEntity<>("No existe la orden buscada", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("No existe la orden buscada", HttpStatus.NOT_FOUND);
         }
     }
      

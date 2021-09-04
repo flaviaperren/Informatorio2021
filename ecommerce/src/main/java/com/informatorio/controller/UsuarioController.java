@@ -38,7 +38,7 @@ public class UsuarioController {
             if(usuario!=null) {
                 return ResponseEntity.status(HttpStatus.OK).body(usuario);
             } else {
-                return new ResponseEntity<>("No existe el usuario buscado", HttpStatus.CONFLICT);
+                return new ResponseEntity<>("No existe el usuario buscado", HttpStatus.NOT_FOUND);
             }
     }
 
@@ -71,7 +71,7 @@ public class UsuarioController {
         if(usuarioExistente!=null) {
             UsuarioService.modificarUsuario(usuarioExistente, usuarioActualizar);
         } else {
-            return new ResponseEntity<>("No existe el usuario solicitado", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("No existe el usuario solicitado", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(usuarioRepository.save(usuarioExistente), HttpStatus.OK);
     }

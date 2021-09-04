@@ -37,7 +37,7 @@ public class ProductoController {
         if(producto!=null) {
             return ResponseEntity.status(HttpStatus.OK).body(producto);
         } else {
-            return new ResponseEntity<>("No existe el producto buscado", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("No existe el producto buscado", HttpStatus.NOT_FOUND);
         }  
     }
     
@@ -76,7 +76,7 @@ public class ProductoController {
         if(productoExistente!=null) {
             ProductoService.modificarProducto(productoExistente, productoActualizar);
         } else {
-            return new ResponseEntity<>("No existe el producto solicitado", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("No existe el producto solicitado", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(productoRepository.save(productoExistente), HttpStatus.OK);
     }

@@ -56,7 +56,7 @@ public class CarritoController {
         if(carrito!=null) {
             return ResponseEntity.status(HttpStatus.OK).body(carrito);
         } else {
-            return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -69,36 +69,53 @@ public class CarritoController {
     @PostMapping(value = "/usuario/{idUsuario}/carrito")
     public ResponseEntity<?> crearCarrito(@PathVariable("idUsuario") Long idUsuario, 
     @Valid @RequestBody Carrito carrito) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).get();
-        if(usuario.getCarritos().isEmpty()) {
-            carrito.setUsuario(usuario);
-             } else {
-                 for(Carrito c:usuario.getCarritos()) {
-                    if(c.getEstado()) {
-                        return new ResponseEntity<>("El usuario tiene un carrito activo", HttpStatus.CONFLICT);  
-                } else {
-                    carrito.setUsuario(usuario);
-                    }
-                }       
-         } return new ResponseEntity<>(carritoRepository.save(carrito), HttpStatus.CREATED);
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if(usuario!=null) {
+            if(usuario.getCarritos().isEmpty()) {
+                carrito.setUsuario(usuario);
+                 } else {
+                     for(Carrito c:usuario.getCarritos()) {
+                        if(c.getEstado()) {
+                            return new ResponseEntity<>("El usuario tiene un carrito activo", HttpStatus.CONFLICT);  
+                    } else {
+                        carrito.setUsuario(usuario);
+                        }
+                    }       
+             } return new ResponseEntity<>(carritoRepository.save(carrito), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("No existe el usuario solicitado", HttpStatus.NOT_FOUND);
+        }
+        
     }
 
     @PutMapping(value = "/productoMas/{idProducto}/carrito/{idCarrito}")
     public ResponseEntity<?> agregarProducto(@PathVariable("idProducto") Long idProducto,
     @PathVariable("idCarrito") Long idCarrito,
     @Valid @RequestBody DetalleCarrito detalleCarrito) {
-        Carrito carritoExistente = carritoRepository.getById(idCarrito);
-        if(carritoExistente.getEstado()) {
-            Producto productoAgregar = productoRepository.getById(idProducto);
-            DetalleCarrito detalle = new DetalleCarrito();
-            detalle.setCarrito(carritoExistente);
-            detalle.setProducto(productoAgregar);
-            detalle.setCantidad(detalleCarrito.getCantidad());
-            carritoExistente.agregarDetalleCarrito(detalle);
+        Carrito carritoExistente = carritoRepository.findById(idCarrito).orElse(null);
+        if(carritoExistente!=null) {
+            if(carritoExistente.getEstado()) {
+                Producto productoAgregar = productoRepository.findById(idProducto).orElse(null);
+                DetalleCarrito detalle = new DetalleCarrito();
+                if(productoAgregar!=null) {
+                    if(productoAgregar.getPublicado()) {
+                        detalle.setCarrito(carritoExistente);
+                        detalle.setProducto(productoAgregar);
+                        detalle.setCantidad(detalleCarrito.getCantidad());
+                        carritoExistente.agregarDetalleCarrito(detalle);
+                    } else {
+                        return new ResponseEntity<>("El producto solicitado no se encuentra disponible", HttpStatus.CONFLICT);
+                    }
+                } else {
+                    return new ResponseEntity<>("No existe el producto solicitado", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>("No se pueden agregar productos a un carrito cerrado", HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("No se pueden agregar productos a un carrito cerrado", HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);
+            return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.NOT_FOUND);
+        }  
     }
 
     @PutMapping(value = "/productoMenos/{idProducto}/carrito/{idCarrito}")
@@ -149,7 +166,7 @@ public class CarritoController {
         }
         return new ResponseEntity<>(carritoRepository.save(carritoExistente), HttpStatus.OK);   
     } else {
-        return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.CONFLICT);
+        return new ResponseEntity<>("No existe el carrito buscado", HttpStatus.NOT_FOUND);
     } 
 
 }
