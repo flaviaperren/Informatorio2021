@@ -8,6 +8,7 @@ import com.informatorio.entity.Estado;
 import com.informatorio.entity.Linea;
 import com.informatorio.entity.Orden;
 import com.informatorio.entity.Producto;
+import com.informatorio.entity.Tipo;
 import com.informatorio.entity.Usuario;
 import com.informatorio.repository.CarritoRepository;
 import com.informatorio.repository.DetalleCarritoRepository;
@@ -126,6 +127,7 @@ public class CarritoController {
             nuevaOrden.setCarritoId(carritoExistente.getId());
             nuevaOrden.setEstado(Estado.CONFIRMADA);
             nuevaOrden.setUsuario(carritoExistente.getUsuario());
+            nuevaOrden.setTipo(Tipo.A);
             nuevaOrden.setCodigoComprobante(String.valueOf(carritoExistente.getUsuario().getId()).concat(String.valueOf(carritoExistente.getId())));
             ordenRepository.save(nuevaOrden); 
 

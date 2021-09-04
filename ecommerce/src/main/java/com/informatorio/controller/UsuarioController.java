@@ -67,7 +67,7 @@ public class UsuarioController {
     @PutMapping(value = "/usuario/{idUsuario}")
     public ResponseEntity<?> modificarUsuario(@PathVariable("idUsuario") Long idUsuario, 
     @RequestBody Usuario usuarioActualizar) {
-        Usuario usuarioExistente = usuarioRepository.findById(idUsuario).get();
+        Usuario usuarioExistente = usuarioRepository.findById(idUsuario).orElse(null);
         if(usuarioExistente!=null) {
             UsuarioService.modificarUsuario(usuarioExistente, usuarioActualizar);
         } else {

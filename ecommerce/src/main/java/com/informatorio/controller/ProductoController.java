@@ -72,7 +72,7 @@ public class ProductoController {
     @PutMapping(value = "/producto/{idProducto}")
     public ResponseEntity<?> modificarProducto(@PathVariable("idProducto") Long idProducto, 
     @RequestBody Producto productoActualizar) {
-        Producto productoExistente = productoRepository.findById(idProducto).get();
+        Producto productoExistente = productoRepository.findById(idProducto).orElse(null);
         if(productoExistente!=null) {
             ProductoService.modificarProducto(productoExistente, productoActualizar);
         } else {
