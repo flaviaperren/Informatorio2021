@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Positive;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Linea {
     @Id
@@ -22,7 +24,7 @@ public class Linea {
     @Transient
     private Double subtotal;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Orden orden;
 

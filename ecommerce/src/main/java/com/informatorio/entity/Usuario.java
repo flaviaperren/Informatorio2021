@@ -51,6 +51,10 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Carrito> carritos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Orden> ordenes = new ArrayList<>();
+
+
     public Long getId() {
         return idUsuario;
     }
@@ -150,5 +154,9 @@ public class Usuario {
     }
     public List<Carrito> getCarritos() {
         return carritos;
+    }
+
+    public List<Orden> getOrdenes() {
+        return ordenes;
     }
 }
